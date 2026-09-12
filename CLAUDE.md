@@ -17,6 +17,7 @@ expanding it.
 ## Stack
 
 - Ruby on Rails 8.1.3.1, API-only mode
+- Ruby 4.0.1 — note: `json` is pinned to `~> 2.7`, 3.x breaks JSON request parsing
 - PostgreSQL
 - Solid Queue for background jobs (Rails 8 default — **not** Sidekiq)
 - Devise + devise-jwt for token auth (frontend is a separate SPA)
