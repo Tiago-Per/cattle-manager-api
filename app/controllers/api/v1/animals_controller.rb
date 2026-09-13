@@ -1,10 +1,11 @@
 module Api
   module V1
     class AnimalsController < ApplicationController
+      before_action :authenticate_user!
       before_action :set_animal, only: %i[show update destroy]
 
       def index
-        render json: Animal.all
+        render json: current_user.animals
       end
 
       def show
@@ -12,7 +13,7 @@ module Api
       end
 
       def create
-        animal = Animal.new(animal_params)
+        animal = current_user.animals.new(animal_params)
 
         if animal.save
           render json: animal, status: :created
@@ -40,7 +41,7 @@ module Api
       private
 
       def set_animal
-        @animal = Animal.find(params[:id])
+        @animal = current_user.animals.find(params[:id])
       end
 
       def animal_params

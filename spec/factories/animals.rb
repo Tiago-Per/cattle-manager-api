@@ -1,5 +1,6 @@
 FactoryBot.define do
   factory :animal do
+    association :user
     sequence(:identification) { |n| "TAG-#{n}" }
     category { "cow" }
     sex { "female" }

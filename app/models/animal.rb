@@ -1,4 +1,5 @@
 class Animal < ApplicationRecord
+  belongs_to :user
   has_many :events, dependent: :restrict_with_error
 
   enum :category, { calf: "calf", heifer: "heifer", cow: "cow", bull: "bull", steer: "steer" }

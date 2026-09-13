@@ -1,6 +1,7 @@
 module Api
   module V1
     class EventsController < ApplicationController
+      before_action :authenticate_user!
       before_action :set_animal, only: %i[index create]
       before_action :set_event, only: %i[show update destroy]
 
@@ -38,11 +39,11 @@ module Api
       private
 
       def set_animal
-        @animal = Animal.find(params[:animal_id])
+        @animal = current_user.animals.find(params[:animal_id])
       end
 
       def set_event
-        @event = Event.find(params[:id])
+        @event = current_user.events.find(params[:id])
       end
 
       def event_params
