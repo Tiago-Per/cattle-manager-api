@@ -85,9 +85,9 @@ RSpec.describe "Api::V1::Animals", type: :request do
       expect(response).to have_http_status(:not_found)
     end
 
-    it "returns 422 when the animal has events", skip: "Event model not implemented yet" do
+    it "returns 422 when the animal has events" do
       animal = create(:animal)
-      create(:event, animal: animal)
+      create(:event, :vaccination, animal: animal)
 
       delete "/api/v1/animals/#{animal.id}"
 

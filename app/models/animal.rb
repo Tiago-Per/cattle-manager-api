@@ -1,5 +1,5 @@
 class Animal < ApplicationRecord
-  # TODO: has_many :events, dependent: :restrict_with_error
+  has_many :events, dependent: :restrict_with_error
 
   enum :category, { calf: "calf", heifer: "heifer", cow: "cow", bull: "bull", steer: "steer" }
   enum :sex, { male: "male", female: "female" }
