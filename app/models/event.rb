@@ -39,6 +39,19 @@ class Event < ApplicationRecord
     occurred_on + ESTRUS_CYCLE_DAYS.days
   end
 
+  def as_json(options = {})
+    json = super
+
+    return json unless breeding?
+
+    json["estimates"] = {
+      "expected_calving_date" => expected_calving_date,
+      "expected_estrus_date" => expected_estrus_date,
+      "disclaimer" => "Estimated from average bovine values. Not a veterinary prediction."
+    }
+    json
+  end
+
   private
 
   def occurred_on_not_in_the_future
