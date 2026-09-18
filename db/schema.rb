@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_09_13_193000) do
+ActiveRecord::Schema[8.1].define(version: 2026_09_13_200100) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -42,16 +42,29 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_13_193000) do
     t.index ["due_on"], name: "index_events_on_due_on"
   end
 
+  create_table "reminders_sent", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.date "window_end", null: false
+    t.date "window_start", null: false
+    t.index ["user_id", "window_start", "window_end"], name: "index_reminders_sent_on_user_and_window", unique: true
+    t.index ["user_id"], name: "index_reminders_sent_on_user_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
     t.string "jti", null: false
+    t.string "phone_number"
     t.datetime "updated_at", null: false
+    t.boolean "whatsapp_opt_in", default: false, null: false
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["jti"], name: "index_users_on_jti", unique: true
   end
 
   add_foreign_key "animals", "users"
   add_foreign_key "events", "animals"
+  add_foreign_key "reminders_sent", "users"
 end
