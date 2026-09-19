@@ -49,7 +49,8 @@ module Api
       def event_params
         params.require(:event).permit(
           :event_type, :occurred_on, :due_on, :notes,
-          :weight_kg, :product_name, :sire_identification
+          :weight_kg, :product_name, :sire_identification,
+          :pregnancy_check_result, :pregnancy_checked_on
         )
       end
     end

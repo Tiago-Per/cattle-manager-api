@@ -76,6 +76,8 @@ RSpec.describe SendRemindersJob, type: :job do
     user = create(:user, :whatsapp_subscriber)
     animal = create(:animal, user: user, identification: "TAG-1")
     create(:event, :breeding, animal: animal, occurred_on: Date.current)
+    create(:event, :breeding, animal: animal, occurred_on: Date.current,
+                              pregnancy_check_result: "confirmed", pregnancy_checked_on: Date.current)
 
     described_class.perform_now(window_start, 300.days.from_now.to_date)
 

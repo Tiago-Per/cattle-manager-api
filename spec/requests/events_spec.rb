@@ -133,17 +133,40 @@ RSpec.describe "Api::V1::Events", type: :request do
   end
 
   describe "estimates in the JSON response" do
-    it "includes the estimates object for a breeding event" do
+    it "includes only the estrus estimate for a pending breeding" do
       event = create(:event, :breeding, animal: create(:animal, user: user))
 
       get "/api/v1/events/#{event.id}", headers: auth_headers(user)
 
       estimates = JSON.parse(response.body)["estimates"]
-      expect(estimates).to include(
-        "expected_calving_date" => event.expected_calving_date.to_s,
-        "expected_estrus_date" => event.expected_estrus_date.to_s,
-        "disclaimer" => "Estimated from average bovine values. Not a veterinary prediction."
-      )
+      expect(estimates.keys).to contain_exactly("expected_estrus_date", "disclaimer")
+      expect(estimates["expected_estrus_date"]).to eq(event.expected_estrus_date.to_s)
+      expect(estimates["disclaimer"]).to eq("Estimated from average bovine values. Not a veterinary prediction.")
+    end
+
+    it "includes only the calving estimate for a confirmed breeding" do
+      event = create(:event, :breeding, animal: create(:animal, user: user),
+                                        occurred_on: Date.current - 40.days,
+                                        pregnancy_check_result: "confirmed",
+                                        pregnancy_checked_on: Date.current - 10.days)
+
+      get "/api/v1/events/#{event.id}", headers: auth_headers(user)
+
+      estimates = JSON.parse(response.body)["estimates"]
+      expect(estimates.keys).to contain_exactly("expected_calving_date", "disclaimer")
+      expect(estimates["expected_calving_date"]).to eq(event.expected_calving_date.to_s)
+    end
+
+    it "includes only the estrus estimate for a negative breeding" do
+      event = create(:event, :breeding, animal: create(:animal, user: user),
+                                        occurred_on: Date.current - 40.days,
+                                        pregnancy_check_result: "negative",
+                                        pregnancy_checked_on: Date.current - 10.days)
+
+      get "/api/v1/events/#{event.id}", headers: auth_headers(user)
+
+      estimates = JSON.parse(response.body)["estimates"]
+      expect(estimates.keys).to contain_exactly("expected_estrus_date", "disclaimer")
     end
 
     it "omits the estimates key for a weight event" do
